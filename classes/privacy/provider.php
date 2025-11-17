@@ -37,7 +37,10 @@ use core_privacy\local\request\writer;
  * Stores recommendations in table: {block_recommend_course_rds}
  * Fields relevant to users: sender_id, receiver_id.
  */
-class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\core_userlist_provider, \core_privacy\local\request\core_user_data_provider {
+class provider implements
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\core_user_data_provider {
     /**
      * Declare metadata about stored personal data.
      *

@@ -26,7 +26,7 @@ ul.block_recommend_course-tabs {
     list-style-type: none;
     padding: 0;
     display: flex;
-    /* prefer shorthand; don't use flex-direction together with flex-flow */
+    /* use only the shorthand - avoid using flex-direction after flex-flow */
     flex-flow: row nowrap;
     margin-bottom: 0;
     margin-left: 0;
