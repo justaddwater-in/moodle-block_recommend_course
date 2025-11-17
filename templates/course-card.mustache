@@ -7,6 +7,8 @@
 }
 }}
 
+<div role="list">
+
 {{< core_course/coursecard }}
     {{$coursecategory}}
         {{#showcoursecategory}}
@@ -16,12 +18,16 @@
             <span class="text-truncate">{{{coursecategory}}}</span>
         {{/showcoursecategory}}
     {{/coursecategory}}
-    {{$coursename}} <span class="">{{{fullname}}}</span> 
-    <div class="small text-muted mt-1">
-        {{#str}} by, block_recommend_course {{/str}}
-        {{#sendername}}
-            {{sendername}}
-        {{/sendername}}
-    </div>
+
+    {{$coursename}}
+        <span class="">{{{fullname}}}</span>
+        <div class="small text-muted mt-1">
+            {{#str}}by, block_recommend_course{{/str}}
+            {{#sendername}}
+                {{sendername}}
+            {{/sendername}}
+        </div>
     {{/coursename}}
 {{/ core_course/coursecard }}
+
+</div>

@@ -1,0 +1,16 @@
+{
+  "todos": [
+    {
+      "coursename": "Course A",
+      "sendername": "Admin User",
+      "courseurl": "https://example.com/course/55",
+      "date": "2025-01-04"
+    },
+    {
+      "coursename": "Course B",
+      "sendername": "Manager",
+      "courseurl": "https://example.com/course/12",
+      "date": "2025-01-09"
+    }
+  ]
+}

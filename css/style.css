@@ -1,6 +1,14 @@
 .block_recommend_course {
     background: #fff;
     padding: 0;
+    padding-top: 10px;
+    -webkit-box-shadow: rgb(0 0 0 / 5%) 0 0.5px 0,
+        rgb(0 0 0 / 3%) 0 1px 0 1px,
+        rgb(0 0 0 / 5%) 0 2px 4px;
+    box-shadow: rgb(0 0 0 / 5%) 0 0.5px 0,
+        rgb(0 0 0 / 3%) 0 1px 0 1px,
+        rgb(0 0 0 / 5%) 0 2px 4px;
+    border-radius: 5px;
 }
 
 .block_recommend_course.card,
@@ -14,21 +22,12 @@
     background-color: #fff;
 }
 
-.block_recommend_course {
-    padding: 10px 0 0;
-    -webkit-box-shadow: rgb(0 0 0 / 5%) 0 0.5px 0,
-        rgb(0 0 0 / 3%) 0 1px 0 1px,
-        rgb(0 0 0 / 5%) 0 2px 4px;
-    box-shadow: rgb(0 0 0 / 5%) 0 0.5px 0,
-        rgb(0 0 0 / 3%) 0 1px 0 1px,
-        rgb(0 0 0 / 5%) 0 2px 4px;
-    border-radius: 5px;
-}
-
 ul.block_recommend_course-tabs {
     list-style-type: none;
     padding: 0;
     display: flex;
+    /* prefer shorthand; don't use flex-direction together with flex-flow */
+    flex-flow: row nowrap;
     margin-bottom: 0;
     margin-left: 0;
 }

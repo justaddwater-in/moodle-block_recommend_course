@@ -1,0 +1,7 @@
+{
+  "items": [
+    { "label": "Dashboard", "url": "#" },
+    { "label": "Manage Recommendations", "url": "#" },
+    { "label": "Settings", "url": "#" }
+  ]
+}

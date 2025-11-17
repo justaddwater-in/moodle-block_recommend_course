@@ -1,0 +1,15 @@
+{
+  "title": "Recommendation Dashboard",
+  "tabs": [
+    {
+      "id": "recommended",
+      "label": "Recommended Courses",
+      "active": true
+    },
+    {
+      "id": "history",
+      "label": "History",
+      "active": false
+    }
+  ]
+}
