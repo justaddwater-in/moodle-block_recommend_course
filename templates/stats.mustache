@@ -1,24 +1,44 @@
-{{! @template
-{
-    "hastop": true,
-    "toprows": [
-        {
-            "courseurl": "https://example.com/course/1",
-            "coursename": "Top Course",
-            "count": 12
-        }
-    ],
-    "hasbottom": true,
-    "bottomrows": [
-        {
-            "courseurl": "https://example.com/course/2",
-            "coursename": "Bottom Course",
-            "count": 1
-        }
-    ]
-}
-}}
+{{!
+    This file is part of Moodle - http://moodle.org/
 
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_recommend_course/stats
+
+    Statistics template displaying most and least recommended courses.
+
+    Example context (json):
+    {
+        "hastop": true,
+        "toprows": [
+            {
+                "courseurl": "https://example.com/course/1",
+                "coursename": "Top Course",
+                "count": 12
+            }
+        ],
+        "hasbottom": true,
+        "bottomrows": [
+            {
+                "courseurl": "https://example.com/course/2",
+                "coursename": "Bottom Course",
+                "count": 1
+            }
+        ]
+    }
+}}
 <div class="block_recommend_course-row d-flex flex-wrap">
     <div class="block_recommend_course-col-50 flex-fill p-2">
         <h4>{{#str}}mostrecommended, block_recommend_course{{/str}}</h4>
@@ -44,7 +64,6 @@
         <div class="alert alert-info">{{#str}}notopcourses, block_recommend_course{{/str}}</div>
         {{/hastop}}
     </div>
-
     <div class="block_recommend_course-col-50 flex-fill p-2">
         <h4>{{#str}}leastrecommended, block_recommend_course{{/str}}</h4>
         {{#hasbottom}}

@@ -10,7 +10,6 @@
         rgb(0 0 0 / 5%) 0 2px 4px;
     border-radius: 5px;
 }
-
 .block_recommend_course.card,
 .block_recommend_course.well,
 .que .block_recommend_course.history,
@@ -21,17 +20,14 @@
 .s-courses.groupinfobox {
     background-color: #fff;
 }
-
 ul.block_recommend_course-tabs {
     list-style-type: none;
     padding: 0;
     display: flex;
-    /* use only the shorthand - avoid using flex-direction after flex-flow */
     flex-flow: row nowrap;
     margin-bottom: 0;
     margin-left: 0;
 }
-
 ul.block_recommend_course-tabs li {
     cursor: pointer;
     padding: 10px 20px;
@@ -41,32 +37,26 @@ ul.block_recommend_course-tabs li {
     border-radius: 0;
     transition: background-color 0.3s ease;
 }
-
 ul.block_recommend_course-tabs li:hover {
     background-color: #e2e2e2;
 }
-
 ul.block_recommend_course-tabs li.active {
     background-color: #0073e6;
     color: white;
 }
-
 ul.block_recommend_course-tabs li.active a {
     background-color: #0073e6;
     color: white;
 }
-
 ul.block_recommend_course-tabs li a,
 ul.tabs li a:hover {
     text-decoration: none;
 }
-
 .block_recommend_course-col-50 {
     width: 40%;
     float: left;
     padding: 20px;
 }
-
 .block_recommend_course-col-50 table {
     width: 100%;
     max-width: 100%;
