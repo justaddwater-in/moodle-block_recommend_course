@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<thirdpartylibs>
+    <library>
+        <name>DataTables</name>
+        <description>DataTables is a jQuery plugin for table display and interaction</description>
+        <version>2.2.1</version>
+        <license>MIT</license>
+        <source>https://datatables.net/</source>
+    </library>
+</thirdpartylibs>

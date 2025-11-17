@@ -1,0 +1,51 @@
+<div class="block_recommend_course-row d-flex flex-wrap">
+    <div class="block_recommend_course-col-50 flex-fill p-2">
+        <h4>{{#str}}mostrecommended, block_recommend_course{{/str}}</h4>
+        {{#hastop}}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{#str}}course, block_recommend_course{{/str}}</th>
+                    <th>{{#str}}totalrecommendations, block_recommend_course{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#toprows}}
+                <tr>
+                    <td><a href="{{courseurl}}">{{coursename}}</a></td>
+                    <td>{{count}}</td>
+                </tr>
+                {{/toprows}}
+            </tbody>
+        </table>
+        {{/hastop}}
+        {{^hastop}}
+        <div class="alert alert-info">{{#str}}notopcourses, block_recommend_course{{/str}}</div>
+        {{/hastop}}
+    </div>
+
+    <div class="block_recommend_course-col-50 flex-fill p-2">
+        <h4>{{#str}}leastrecommended, block_recommend_course{{/str}}</h4>
+        {{#hasbottom}}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{#str}}course, block_recommend_course{{/str}}</th>
+                    <th>{{#str}}totalrecommendations, block_recommend_course{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#bottomrows}}
+                <tr>
+                    <td><a href="{{courseurl}}">{{coursename}}</a></td>
+                    <td>{{count}}</td>
+                </tr>
+                {{/bottomrows}}
+            </tbody>
+        </table>
+        {{/hasbottom}}
+        {{^hasbottom}}
+        <div class="alert alert-info">{{#str}}nobottomcourses, block_recommend_course{{/str}}</div>
+        {{/hasbottom}}
+    </div>
+</div>

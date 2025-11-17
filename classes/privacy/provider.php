@@ -24,17 +24,234 @@
  */
 namespace block_recommend_course\privacy;
 
-defined('MOODLE_INTERNAL') || die();
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\contextlist;
+use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\approved_userlist;
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\writer;
 
-class provider implements \core_privacy\local\metadata\null_provider {
+/**
+ * Privacy API implementation for block_recommend_course.
+ *
+ * Stores recommendations in table: {recommend_course_recommends}
+ * Fields relevant to users: sender_id, receiver_id.
+ */
+class provider implements
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_user_data_provider,
+    \core_privacy\local\request\core_userlist_provider {
 
     /**
-     * Get the language string identifier with the component's language
-     * file to explain why this plugin stores no data.
+     * Declare metadata about stored personal data.
      *
-     * @return  string
+     * @param collection $collection
+     * @return collection
      */
-    public static function get_reason() : string {
-        return 'privacy:metadata';
+    public static function get_metadata(collection $collection): collection {
+        // Describe the DB table and fields we store.
+        $collection->add_database_table(
+            'recommend_course_recommends',
+            [
+                'sender_id'    => 'privacy:metadata:recommend_course_recommends:sender_id',
+                'receiver_id'  => 'privacy:metadata:recommend_course_recommends:receiver_id',
+                'course_id'    => 'privacy:metadata:recommend_course_recommends:course_id',
+                'created_on'   => 'privacy:metadata:recommend_course_recommends:created_on',
+            ],
+            'privacy:metadata:recommend_course_recommends'
+        );
+
+        return $collection;
+    }
+
+    /**
+     * Get contexts that contain user information for the specified user.
+     *
+     * This plugin stores data at system-level (site-wide recommendations),
+     * so we return the system context when there are rows for the user.
+     *
+     * @param int $userid
+     * @return contextlist
+     */
+    public static function get_contexts_for_userid($userid): contextlist {
+        global $DB;
+
+        $contextlist = new contextlist();
+
+        // If user is sender or receiver, then add system context.
+        $sql = "SELECT 1
+                  FROM {recommend_course_recommends}
+                 WHERE sender_id = :uid OR receiver_id = :uid
+                LIMIT 1";
+        $params = ['uid' => $userid];
+
+        if ($DB->record_exists_sql($sql, $params)) {
+            $contextlist->add_context(\context_system::instance());
+        }
+
+        return $contextlist;
+    }
+
+    /**
+     * Get a list of users who have data in the context.
+     *
+     * Required for admin tools that show which users have data within a context.
+     *
+     * @param userlist $userlist
+     * @return void
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        global $DB;
+
+        $context = $userlist->get_context();
+        // We only store in system context.
+        if ($context->contextlevel !== CONTEXT_SYSTEM) {
+            return;
+        }
+
+        // Find distinct users who are sender or receiver.
+        $sql = "SELECT DISTINCT u.id
+                  FROM {user} u
+                  JOIN {recommend_course_recommends} r
+                    ON (r.sender_id = u.id OR r.receiver_id = u.id)";
+        $records = $DB->get_records_sql($sql);
+
+        foreach ($records as $rec) {
+            $userlist->add_user($rec->id);
+        }
+    }
+
+    /**
+     * Export all user data for the specified user, in the specified contexts.
+     *
+     * @param approved_contextlist $contextlist
+     * @return void
+     */
+    public static function export_user_data(approved_contextlist $contextlist) {
+        global $DB;
+
+        // We only operate for system context here.
+        $contexts = $contextlist->get_contexts();
+        foreach ($contexts as $context) {
+            if ($context->contextlevel !== CONTEXT_SYSTEM) {
+                continue;
+            }
+
+            // Get the userid we are exporting for.
+            $userid = $contextlist->get_user();
+
+            // Export recommendations where the user is sender.
+            $sent = $DB->get_records('recommend_course_recommends', ['sender_id' => $userid]);
+            $sentdata = [];
+            foreach ($sent as $r) {
+                $sentdata[] = [
+                    'id' => $r->id,
+                    'to' => $r->receiver_id,
+                    'courseid' => $r->course_id,
+                    'created_on' => $r->created_on,
+                    'role' => 'sender',
+                ];
+            }
+
+            if (!empty($sentdata)) {
+                writer::export_data(
+                    $context,
+                    'block_recommend_course',
+                    'recommendations_sent',
+                    $sentdata
+                );
+            }
+
+            // Export recommendations where the user is receiver.
+            $received = $DB->get_records('recommend_course_recommends', ['receiver_id' => $userid]);
+            $receiveddata = [];
+            foreach ($received as $r) {
+                $receiveddata[] = [
+                    'id' => $r->id,
+                    'from' => $r->sender_id,
+                    'courseid' => $r->course_id,
+                    'created_on' => $r->created_on,
+                    'role' => 'receiver',
+                ];
+            }
+
+            if (!empty($receiveddata)) {
+                writer::export_data(
+                    $context,
+                    'block_recommend_course',
+                    'recommendations_received',
+                    $receiveddata
+                );
+            }
+
+            // If you have any files related to recommendations, export them using writer::export_area_files().
+        }
+    }
+
+    /**
+     * Delete all user data for the specified user, in the specified contexts.
+     *
+     * @param approved_contextlist $contextlist
+     * @return void
+     */
+    public static function delete_data_for_user(approved_contextlist $contextlist) {
+        global $DB;
+
+        $contexts = $contextlist->get_contexts();
+        foreach ($contexts as $context) {
+            if ($context->contextlevel !== CONTEXT_SYSTEM) {
+                continue;
+            }
+
+            $userid = $contextlist->get_user();
+
+            // Delete rows where the user is sender or receiver.
+            $DB->delete_records('recommend_course_recommends', ['sender_id' => $userid]);
+            $DB->delete_records('recommend_course_recommends', ['receiver_id' => $userid]);
+
+            // If you stored files per-user, you must delete them as well with file_storage.
+        }
+    }
+
+    /**
+     * Delete all user data for all users in the specified context.
+     *
+     * Used for wiping data in a context (for site removal, etc.)
+     *
+     * @param \context $context
+     * @return void
+     */
+    public static function delete_data_for_all_users_in_context(\context $context) {
+        global $DB;
+
+        if ($context->contextlevel !== CONTEXT_SYSTEM) {
+            return;
+        }
+
+        $DB->delete_records('recommend_course_recommends', []);
+    }
+
+    /**
+     * Delete multiple users in a single context (batch).
+     *
+     * @param approved_userlist $userlist
+     * @return void
+     */
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        global $DB;
+
+        $context = $userlist->get_context();
+        if ($context->contextlevel !== CONTEXT_SYSTEM) {
+            return;
+        }
+
+        $userids = $userlist->get_userids();
+        if (empty($userids)) {
+            return;
+        }
+
+        list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+        $DB->delete_records_select('recommend_course_recommends', "sender_id $insql", $inparams);
+        $DB->delete_records_select('recommend_course_recommends', "receiver_id $insql", $inparams);
     }
 }

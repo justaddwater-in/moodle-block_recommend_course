@@ -22,36 +22,44 @@
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_recommend_course extends block_base
-{
+class block_recommend_course extends block_base {
 
+    /**
+     * Initialise the block.
+     *
+     * Sets the default block title.
+     *
+     * @return void
+     */
     public function init() {
         $this->title = get_string('blocktitle', 'block_recommend_course');
     }
 
+    /**
+     * Generate the block content.
+     *
+     * @return stdClass The block content object containing ->text (HTML).
+     */
     public function get_content() {
         global $OUTPUT, $CFG, $DB, $USER;
 
         // Detect sidebar vs content region.
-        $is_sidebar = in_array($this->instance->region, ['side-pre', 'side-post']);
-        $renderable = new block_recommend_course\output\main($is_sidebar);
+        $issidebar = in_array($this->instance->region, ['side-pre', 'side-post']);
+        $mainrenderable = new \block_recommend_course\output\main($issidebar);
         $renderer = $this->page->get_renderer('block_recommend_course');
-        
+
         $this->content = new stdClass();
-        $this->content->text = $renderer->render($renderable);
-        
+        $this->content->text = $renderer->render($mainrenderable);
+
         return $this->content;
-        
     }
-    
 
     /**
      * Defines in which pages this block can be added.
      *
      * @return array of the pages where the block can be added.
      */
-    public function applicable_formats()
-    {
+    public function applicable_formats() {
         return [
             'admin' => false,
             'site-index' => true,

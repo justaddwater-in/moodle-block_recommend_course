@@ -25,82 +25,58 @@
 
  require_once('../../config.php');
  global $DB, $USER, $PAGE;
- 
+
  require_login();
  $context = context_system::instance();
  $PAGE->set_context($context);
  $PAGE->set_url(new moodle_url('/blocks/recommend_course/history.php'));
 
- if (!has_capability('block/recommend_course:viewstats', $context)) {
+if (!has_capability('block/recommend_course:viewstats', $context)) {
     echo $OUTPUT->header();
     echo $OUTPUT->notification(get_string('nopermission', 'block_recommend_course'), 'error');
-    echo '<a href="' . new moodle_url('/my/') . '" class="btn btn-primary">'. get_string('back_dashboard', 'block_recommend_course') . '</a>';
+    echo '<a href="' . new moodle_url('/my/') . '" class="btn btn-primary">'.
+    get_string('back_dashboard', 'block_recommend_course') . '</a>';
     echo $OUTPUT->footer();
     exit;
 }
- // Set up page parameters
+ // Set up page parameters.
  $pluginname = get_string('pluginname', 'block_recommend_course');
  $title = get_string('historytitle', 'block_recommend_course');
  $PAGE->set_url(new moodle_url('/blocks/recommend_course/recommendations.php'));
  $PAGE->set_title($pluginname.' : '.$title);
  $PAGE->set_heading($pluginname);
- $PAGE->set_pagelayout('standard'); 
- 
- // Include DataTables
+ $PAGE->set_pagelayout('standard');
+
+ // Include DataTables.
  $PAGE->requires->jquery();
  $PAGE->requires->css('/blocks/recommend_course/css/style.css');
  $PAGE->requires->css('/blocks/recommend_course/css/datatables.min.css');
- $PAGE->requires->js_call_amd('block_recommend_course/init_datatable', 'DTinit', array('#recommended-table', array(
+ $PAGE->requires->js_call_amd('block_recommend_course/init_datatable', 'DTinit', ['#recommended-table', [
     'paging' => true,
     'searching' => true,
     'info' => true,
     'pageLength' => 25,
- )));
- echo $OUTPUT->header();
-include('includes/_manage_nav.php');
- 
- $sql = "SELECT * FROM {recommend_course_recommends}";
- $recommended_courses = $DB->get_records_sql($sql);
- 
- if ($recommended_courses) {
-     echo '<div class="table-wrapper">';
-     echo '<table id="recommended-table" class="table table-bordered table-striped">';
-     echo '<thead>
-             <tr>
-                <th>' . get_string('recommeded_by', 'block_recommend_course') . '</th>
-                <th>' . get_string('recommendedto', 'block_recommend_course') . '</th>
-                <th>' . get_string('course', 'block_recommend_course') . '</th>
-                <th>' . get_string('recommendeddate', 'block_recommend_course') . '</th>
-             </tr>
-           </thead>';
-     echo '<tbody>';
- 
-     $user_sql = "SELECT firstname, lastname FROM {user} WHERE id = :user_id";
-     $course_sql = "SELECT fullname FROM {course} WHERE id = :course_id";
- 
-     foreach ($recommended_courses as $course) {
-         $sender = $DB->get_record_sql($user_sql, ['user_id' => $course->sender_id]);
-         $receiver = $DB->get_record_sql($user_sql, ['user_id' => $course->receiver_id]);
-         $course_data = $DB->get_record_sql($course_sql, ['course_id' => $course->course_id]);
- 
-         $course_url = new moodle_url('/course/view.php', ['id' => $course->course_id]);
-         $course_link = html_writer::link($course_url, $course_data->fullname);
- 
-         $timestamp = strtotime($course->created_on);
- 
-         echo '<tr>';
-         echo '<td>' . $sender->firstname . ' ' . $sender->lastname . '</td>';
-         echo '<td>' . $receiver->firstname . ' ' . $receiver->lastname . '</td>';
-         echo '<td>' . $course_link . '</td>';
-         echo '<td>' . userdate($timestamp, '%a, %d %b %Y, %H:%M') . '</td>';
-         echo '</tr>';
-     }
- 
-     echo '</tbody>';
-     echo '</table>';
-     echo '</div>';
- } else {
-    echo '<p>' . get_string('nocoursesfound', 'block_recommend_course') . '</p>';
- }
+ ]]);
+ $sql = "SELECT r.*,
+               s.firstname AS sender_firstname, s.lastname AS sender_lastname,
+               u.firstname AS receiver_firstname, u.lastname AS receiver_lastname,
+               c.fullname AS course_fullname
+          FROM {recommend_course_recommends} r
+          JOIN {user} s ON s.id = r.sender_id
+          JOIN {user} u ON u.id = r.receiver_id
+          JOIN {course} c ON c.id = r.course_id";
 
-echo $OUTPUT->footer(); 
+ $records = $DB->get_records_sql($sql);
+
+ echo $OUTPUT->header();
+ $navigation = new \block_recommend_course\output\manage_nav(basename($PAGE->url->get_path()));
+ echo $OUTPUT->render_from_template('block_recommend_course/manage_nav', $navigation->export_for_template($OUTPUT));
+
+
+ if ($records) {
+     $table = new \block_recommend_course\output\history_table($records);
+     echo $OUTPUT->render($table);
+ } else {
+     echo $OUTPUT->notification(get_string('nocoursesfound', 'block_recommend_course'), 'info');
+ }
+ echo $OUTPUT->footer();

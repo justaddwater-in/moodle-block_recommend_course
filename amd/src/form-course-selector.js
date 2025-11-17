@@ -14,28 +14,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * JS File : block_recommend_course plugin.
+ * Course selector module for autocomplete.
  *
+ * @module     block_recommend_course/form-course-selector
  * @package    block_recommend_course
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery'], function($) {
+define(['core/ajax', 'core/templates'], function(Ajax, Templates) {
     return {
-        DTinit: function(selector, options) {
-            // Dynamically load the DataTables library
-            require(['js/datatables.min.js'], function() {
-                // Initialize the DataTable
-                $(document).ready(function() {
-                    if ($.fn.DataTable) {
-                        $(selector).DataTable(options);
-                    } else {
-                        console.error('DataTables library failed to load.');
-                    }
-                });
-            });
+        transport: function(selector, query, success, failure) {
+            var promise;
+            
+            promise = Ajax.call([{
+                methodname: 'block_recommend_course_course_search',
+                args: {
+                    query: query
+                }
+            }]);
+            
+            promise[0].then(function(results) {
+                success(results);
+                return;
+            }).catch(failure);
+        },
+        
+        processResults: function(selector, results) {
+            return results;
         }
     };
 });

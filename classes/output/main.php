@@ -35,33 +35,55 @@ use context_system;
 
 
 require_once($CFG->libdir . '/completionlib.php');
-
+/**
+ * Main renderable for the recommend course block.
+ *
+ * Provides data required by the mustache template to render the block
+ * either in the sidebar (compact) or the center/content area (expanded).
+ *
+ * @package    block_recommend_course
+ * @copyright  2025 Justaddwater <contact@justaddwater.in>
+ * @author     Himanshu Saini
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class main implements renderable, templatable {
-    
-    private $is_sidebar;
 
-    public function __construct(bool $is_sidebar) {
-        $this->is_sidebar = $is_sidebar;
-    }
-    
     /**
-     * Export this data so it can be used as the context for a mustache template.
+     * Whether the block is in a sidebar region.
      *
-     * @param renderer_base $output
-     * @return \stdClass|array
+     * @var bool
+     */
+    private $issidebar;
+
+    /**
+     * Constructor.
+     *
+     * @param bool $issidebar True when block is in a sidebar region.
+     */
+    public function __construct(bool $issidebar) {
+        $this->issidebar = $issidebar;
+    }
+
+    /**
+     * Export data for the mustache template.
+     *
+     * @param renderer_base $output The renderer (unused here but kept for signature compatibility).
+     * @return array Data to be consumed by the mustache template.
      */
     public function export_for_template(renderer_base $output) {
-        global $USER,$DB;
+        global $USER, $DB;
+
         $context = \context_system::instance();
         $canviewhistory = has_capability('block/recommend_course:viewstats', $context);
-        $is_sidebar = $this->is_sidebar;
-        $limit = $is_sidebar ? 1 : 4;
+
+        $issidebar = $this->issidebar;
+        $limit = $issidebar ? 1 : 4;
 
         // Fetch recommendations for this user.
-        $sql = "SELECT rec.id as rec_id, rec.sender_id,
+        $sql = "SELECT rec.id AS rec_id, rec.sender_id,
                        sender.firstname, sender.lastname,
                        rec.receiver_id, rec.created_on,
-                       c.id as courseid, c.fullname, c.shortname,
+                       c.id AS courseid, c.fullname, c.shortname,
                        c.category, c.enddate, c.visible
                   FROM {recommend_course_recommends} rec
                   JOIN {course} c ON rec.course_id = c.id
@@ -69,25 +91,23 @@ class main implements renderable, templatable {
                  WHERE rec.receiver_id = :userid
               ORDER BY rec.created_on DESC";
         $records = $DB->get_records_sql($sql, ['userid' => $USER->id], 0, $limit);
-       
-        $recommended_view = new recommended_view($records);
-        $recommended_courses = $recommended_view->export_for_template($output);
+
+        $recommendedview = new recommended_view($records);
+        $recommendedcourses = $recommendedview->export_for_template($output);
 
         return [
             'userid' => $USER->id,
             'pagingbar' => [
                 'next' => true,
-                'previous' => true
+                'previous' => true,
             ],
-            'recommended' => $recommended_courses,
+            'recommended' => $recommendedcourses,
             'viewlist' => false,
             'viewcard' => true,
-            'allurl' => new \moodle_url('/blocks/recommend_course/all.php'),
-            'recommendurl' => new \moodle_url('/blocks/recommend_course/recommend_course.php'),
-            'historyurl' => new \moodle_url('/blocks/recommend_course/history.php'),
-            'canviewhistory' => $canviewhistory
-            
-            
+            'allurl' => (new \moodle_url('/blocks/recommend_course/all.php'))->out(false),
+            'recommendurl' => (new \moodle_url('/blocks/recommend_course/recommend_course.php'))->out(false),
+            'historyurl' => (new \moodle_url('/blocks/recommend_course/history.php'))->out(false),
+            'canviewhistory' => $canviewhistory,
         ];
     }
 }

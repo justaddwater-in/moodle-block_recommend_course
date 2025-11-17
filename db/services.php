@@ -15,38 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capabilites block_recommend_course plugin.
+ * External services definition for block_recommend_course.
  *
  * @package    block_recommend_course
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
-$capabilities = [
-    'block/recommend_course:myaddinstance' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'user' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/my:manageblocks',
+
+$functions = [
+    'block_recommend_course_course_search' => [
+        'classname' => 'block_recommend_course\external\course_search',
+        'methodname' => 'execute',
+        'description' => 'Search for courses',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
     ],
-    'block/recommend_course:addinstance' => [
-        'riskbitmask' => RISK_SPAM | RISK_XSS,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
-        'clonepermissionsfrom' => 'moodle/site:manageblocks',
-    ],
-    'block/recommend_course:viewstats' => [
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => [
-            'manager' => CAP_ALLOW,
-        ],
+    'block_recommend_course_user_search' => [
+        'classname' => 'block_recommend_course\external\user_search',
+        'methodname' => 'execute',
+        'description' => 'Search for users',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
     ],
 ];

@@ -1,0 +1,22 @@
+<div class="table-wrapper">
+<table id="recommended-table" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>{{#str}}recommeded_by, block_recommend_course{{/str}}</th>
+            <th>{{#str}}recommendedto, block_recommend_course{{/str}}</th>
+            <th>{{#str}}course, block_recommend_course{{/str}}</th>
+            <th>{{#str}}recommendeddate, block_recommend_course{{/str}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#rows}}
+        <tr>
+            <td>{{sender}}</td>
+            <td>{{receiver}}</td>
+            <td><a href="{{courseurl}}">{{coursename}}</a></td>
+            <td>{{date}}</td>
+        </tr>
+        {{/rows}}
+    </tbody>
+</table>
+</div>

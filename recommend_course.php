@@ -22,6 +22,7 @@
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once("../../config.php");
 require_once('recommendcourse_form.php');
 global $DB, $USER;
@@ -33,11 +34,11 @@ $PAGE->set_url('/blocks/recommend_course/recommend_course.php');
 $title = get_string('title', 'block_recommend_course');
 $mform = new recommendcourse_form();
 
-//Form processing and displaying is done here
+  // Form processing and displaying is done here.
 if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot);
 } else if ($fromform = $mform->get_data()) {
-    //adding data to db
+    // adding data to db.
     if (count($fromform->users) > 0 && $fromform->course) {
 
         foreach ($fromform->users as $receiver) {
@@ -48,16 +49,17 @@ if ($mform->is_cancelled()) {
             $temp->created_on = date('Y-m-d H:i:s');
             $DB->insert_record('recommend_course_recommends', $temp);
         }
-
-        redirect("$CFG->wwwroot/blocks/recommend_course/recommend_course.php", get_string('add_success', 'block_recommend_course'), null, \core\output\notification::NOTIFY_SUCCESS);
-    } else
+        $redirecturl = "$CFG->wwwroot/blocks/recommend_course/recommend_course.php";
+        redirect($redirecturl, get_string('add_success', 'block_recommend_course'), null, \core\output\notification::NOTIFY_SUCCESS);
+    } else {
         redirect("$CFG->wwwroot/blocks/recommend_course/recommend_course.php", get_string('add_error', 'block_recommend_course'), null, \core\output\notification::NOTIFY_ERROR);
+    }
 } else {
 
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_title($title);
     $PAGE->set_heading($title);
-    $PAGE->set_cacheable(true);
+    $PAGE->set_cacheable(false);
 
 
     echo $OUTPUT->header();

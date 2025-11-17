@@ -23,9 +23,18 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace block_recommend_course\output;
-defined('MOODLE_INTERNAL') || die;
 
 use plugin_renderer_base;
+/**
+ * Custom renderer for the block_recommend_course plugin.
+ *
+ * Extends Moodle’s {@see plugin_renderer_base} to render the block’s
+ * mustache templates and other output components, such as recommended
+ * course cards and statistics.
+ *
+ * @package    block_recommend_course
+ * @category   output
+ */
 class renderer extends plugin_renderer_base {
 
     /**

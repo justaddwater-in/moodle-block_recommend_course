@@ -15,69 +15,65 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Recommed a course form class for the block_recommend_course plugin.
+ * Recommend a course form class for the block_recommend_course plugin.
  *
  * @package    block_recommend_course
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once("$CFG->libdir/formslib.php");
-class recommendcourse_form extends moodleform
-{
-    //Add elements to form
-    public function definition()
-    {
-        global $CFG, $DB, $USER;
 
+require_once("../../config.php");
+require_once("$CFG->libdir/formslib.php");
+/**
+ * Form for recommending a course to selected users.
+ *
+ * This form allows selecting a course and one or more users to whom the
+ * recommendation will be sent. AJAX-based autocomplete fields may be used
+ * depending on configuration.
+ *
+ * @package    block_recommend_course
+ * @category   form
+ */
+class recommendcourse_form extends moodleform {
+
+    /**
+     * Add elements to form
+     */
+    public function definition() {
+        global $CFG;
         $mform = $this->_form;
 
-        //add course dropdown
-        $courses = $DB->get_records_sql("
-            SELECT id, fullname, visible 
-            FROM {course} 
-            WHERE visible = 1 AND id != 1
-            ORDER BY fullname ASC
-        ");
-
-        $coursenames = array();
-        foreach ($courses as $course) {
-            $coursenames[$course->id] = $course->fullname;
-        }
-        $select = $mform->addElement('select', 'course', get_string('select_course', 'block_recommend_course'), $coursenames);
-
-        //add user multi select
-        $sql = "SELECT id, firstname, lastname, username FROM {user} WHERE deleted = 0 AND suspended = 0 AND id <> ? ORDER BY firstname ASC";
-        $users = $DB->get_records_sql($sql, [$USER->id]);
-
-        $usernames = array();
-        foreach ($users as $user) {
-            //if($this->check_user_can_view_profile($user)) 
-            $usernames[$user->id] = $user->firstname . ' ' . $user->lastname . ' (' . $user->username . ')';
-        }
-        $options = array(
-            'multiple' => true,
-            'noselectionstring' => get_string('noselection_string', 'block_recommend_course')
+        // Add course autocomplete with AJAX.
+        $options = [
+            'ajax' => 'block_recommend_course/form-course-selector',
+            'multiple' => false,
+            'noselectionstring' => get_string('select_course', 'block_recommend_course'),
+        ];
+        $mform->addElement(
+            'autocomplete',
+            'course',
+            get_string('select_course', 'block_recommend_course'),
+            [],
+            $options
         );
-        $mform->addElement('autocomplete', 'users', get_string('select_users', 'block_recommend_course'), $usernames, $options);
+        $mform->addRule('course', get_string('required'), 'required', null, 'client');
 
-        $this->add_action_buttons(true, 'Submit');
+        // Add user multi-select autocomplete with AJAX.
+        $useroptions = [
+            'ajax' => 'block_recommend_course/form-user-selector',
+            'multiple' => true,
+            'noselectionstring' => get_string('noselection_string', 'block_recommend_course'),
+        ];
+        $mform->addElement(
+            'autocomplete',
+            'users',
+            get_string('select_users', 'block_recommend_course'),
+            [],
+            $useroptions
+        );
+        $mform->addRule('users', get_string('required'), 'required', null, 'client');
+
+        $this->add_action_buttons(true, get_string('submit'));
     }
-    
-    
-    private function check_user_can_view_profile($targetuser, $viewer = null) {
-        global $USER;
-    
-        if (is_null($viewer)) {
-            $viewer = $USER;
-        }
-    
-        if (!empty($targetuser->deleted)) {
-            return false;
-        }
-    
-        $context = context_user::instance($targetuser->id);
-        return has_capability('moodle/user:viewdetails', $context, $viewer);
-    }
-    
 }
