@@ -40,14 +40,13 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
     // adding data to db.
     if (count($fromform->users) > 0 && $fromform->course) {
-
         foreach ($fromform->users as $receiver) {
             $temp = new stdClass();
             $temp->sender_id = $USER->id;
             $temp->receiver_id = $receiver;
             $temp->course_id = $fromform->course;
             $temp->created_on = date('Y-m-d H:i:s');
-            $DB->insert_record('recommend_course_recommends', $temp);
+            $DB->insert_record('block_recommend_course_rds', $temp);
         }
         $redirecturl = "$CFG->wwwroot/blocks/recommend_course/recommend_course.php";
         redirect($redirecturl, get_string('add_success', 'block_recommend_course'), null, \core\output\notification::NOTIFY_SUCCESS);
@@ -55,7 +54,6 @@ if ($mform->is_cancelled()) {
         redirect("$CFG->wwwroot/blocks/recommend_course/recommend_course.php", get_string('add_error', 'block_recommend_course'), null, \core\output\notification::NOTIFY_ERROR);
     }
 } else {
-
     $PAGE->set_pagelayout('incourse');
     $PAGE->set_title($title);
     $PAGE->set_heading($title);

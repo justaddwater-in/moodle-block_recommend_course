@@ -47,7 +47,6 @@ require_once($CFG->libdir . '/completionlib.php');
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class main implements renderable, templatable {
-
     /**
      * Whether the block is in a sidebar region.
      *
@@ -85,7 +84,7 @@ class main implements renderable, templatable {
                        rec.receiver_id, rec.created_on,
                        c.id AS courseid, c.fullname, c.shortname,
                        c.category, c.enddate, c.visible
-                  FROM {recommend_course_recommends} rec
+                  FROM {block_recommend_course_rds} rec
                   JOIN {course} c ON rec.course_id = c.id
                   JOIN {user} sender ON sender.id = rec.sender_id
                  WHERE rec.receiver_id = :userid

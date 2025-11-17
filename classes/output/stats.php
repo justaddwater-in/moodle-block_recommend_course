@@ -75,7 +75,7 @@ class stats implements renderable, templatable {
      * @return array Data structure ready for templating.
      */
     public function export_for_template(renderer_base $output) {
-        $format = function($courses) {
+        $format = function ($courses) {
             $rows = [];
             foreach ($courses as $c) {
                 $courseurl = new \moodle_url('/course/view.php', ['id' => $c->course_id]);

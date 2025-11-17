@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <XMLDB PATH="blocks/recommend_course/db" VERSION="2025013001" COMMENT="Recommend a Course block with recommendations table">
     <TABLES>
-        <!-- New mdl_recommend_course_recommends table -->
-        <TABLE NAME="recommend_course_recommends" COMMENT="Stores course recommendations">
+        <!-- New mdl_block_recommend_course_rds table -->
+        <TABLE NAME="block_recommend_course_rds" COMMENT="stores course recommendations">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key" />
                 <FIELD NAME="sender_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="ID of the sender (recommender)" />

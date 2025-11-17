@@ -40,7 +40,7 @@ $sql = "SELECT rec.id as rec_id, rec.sender_id,
                sender.firstname, sender.lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename,
                rec.receiver_id, rec.created_on,
                c.id as courseid, c.fullname, c.shortname
-          FROM {recommend_course_recommends} rec
+          FROM {block_recommend_course_rds} rec
           JOIN {course} c ON rec.course_id = c.id
           JOIN {user} sender ON sender.id = rec.sender_id
          WHERE rec.receiver_id = :userid
@@ -81,11 +81,11 @@ if ($records) {
 // Add "Recommend a Course" button at bottom.
 $recommendurl = new moodle_url('/blocks/recommend_course/recommend_course.php');
 echo html_writer::div(
-     html_writer::link(
-          $recommendurl,
-          get_string('button', 'block_recommend_course'),
-          ['class' => 'btn btn-primary mt-3']
-     ),
-     'text-center mt-4'
+    html_writer::link(
+        $recommendurl,
+        get_string('button', 'block_recommend_course'),
+        ['class' => 'btn btn-primary mt-3']
+    ),
+    'text-center mt-4'
 );
 echo $OUTPUT->footer();

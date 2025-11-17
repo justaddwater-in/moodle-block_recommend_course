@@ -38,23 +38,25 @@ $PAGE->set_url(new moodle_url('/blocks/recommend_course/stats_table.php'));
 if (!has_capability('block/recommend_course:viewstats', $context)) {
     echo $OUTPUT->header();
     echo $OUTPUT->notification(get_string('nopermission', 'block_recommend_course'), 'error');
-    echo $OUTPUT->single_button(new moodle_url('/my/'),
+    echo $OUTPUT->single_button(
+        new moodle_url('/my/'),
         get_string('back_dashboard', 'block_recommend_course'),
-        'get');
+        'get'
+    );
     echo $OUTPUT->footer();
     exit;
 }
 
 $pluginname = get_string('pluginname', 'block_recommend_course');
 $title = get_string('course_recommendations_stats', 'block_recommend_course');
-$PAGE->set_title($pluginname.' : '.$title);
+$PAGE->set_title($pluginname . ' : ' . $title);
 $PAGE->set_heading($pluginname);
 $PAGE->set_pagelayout('standard');
 $PAGE->requires->css('/blocks/recommend_course/css/style.css');
 
 // Use joins so we also fetch course fullname
 $topsql = "SELECT r.course_id, COUNT(*) AS recommendation_count, c.fullname AS course_fullname
-              FROM {recommend_course_recommends} r
+              FROM {block_recommend_course_rds} r
               JOIN {course} c ON c.id = r.course_id
           GROUP BY r.course_id, c.fullname
           ORDER BY recommendation_count DESC
@@ -62,7 +64,7 @@ $topsql = "SELECT r.course_id, COUNT(*) AS recommendation_count, c.fullname AS c
 $top = $DB->get_records_sql($topsql);
 
 $bottomsql = "SELECT r.course_id, COUNT(*) AS recommendation_count, c.fullname AS course_fullname
-                 FROM {recommend_course_recommends} r
+                 FROM {block_recommend_course_rds} r
                  JOIN {course} c ON c.id = r.course_id
              GROUP BY r.course_id, c.fullname
              ORDER BY recommendation_count ASC

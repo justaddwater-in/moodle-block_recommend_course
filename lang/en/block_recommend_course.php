@@ -26,36 +26,36 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['add_error'] = 'Invalid data. Please select at least one user and course.';
+$string['add_success'] = 'Recommendation has been successfully submitted.';
+$string['all_recommendation'] = 'All Recommendations';
+$string['back_dashboard'] = 'Back to dashboard';
 $string['blocktitle'] = 'Recent Recommendations';
 $string['button'] = 'Recommend a course';
+$string['by'] = 'By:';
+$string['course'] = 'Course';
+$string['description'] = 'A block to recommend courses to users';
+$string['details_below'] = 'Please find details below';
+$string['email_open'] = 'You have received a course recommendation on ';
+$string['email_subject'] = 'You have a new course recommendation.';
+$string['historytitle'] = 'Recommendation history';
+$string['noselection_string'] = 'Search users from below';
 $string['pluginname'] = 'Recommend a course';
 $string['pluginname:addinstance'] = 'Add a new recommend a course block';
 $string['pluginname:myaddinstance'] = 'Add a new recommend a course block';
 
-$string['title'] = 'Recommend a course';
-
-$string['historytitle'] = 'Recommendation history';
-
-$string['show_all'] = 'Show All Recommendations';
-$string['description'] = 'A block to recommend courses to users';
+$string['recommeded_by'] = 'Recommended by';
+$string['recommendation_history'] = 'View history';
 $string['select_course'] = 'Select course';
 $string['select_users'] = 'Select users';
-$string['noselection_string'] = 'Search users from below';
+$string['show_all'] = 'Show All Recommendations';
 $string['submit'] = 'Submit';
+$string['title'] = 'Recommend a course';
 
-$string['add_success'] = 'Recommendation has been successfully submitted.';
-$string['add_error'] = 'Invalid data. Please select at least one user and course.';
 
-$string['email_subject'] = 'You have a new course recommendation.';
-$string['email_open'] = 'You have received a course recommendation on ';
-$string['details_below'] = 'Please find details below';
-$string['course'] = 'Course';
-$string['recommeded_by'] = 'Recommended by';
-$string['by'] = 'By:';
+
+
 $string['view_course'] = 'View Course';
-$string['recommendation_history'] = 'View history';
-$string['all_recommendation'] = 'All Recommendations';
-$string['back_dashboard'] = 'Back to dashboard';
 
 // Privacy text.
 $string['privacy:metadata'] = 'The recommend a course block does not store any personal information and works based on user ID.';
@@ -83,8 +83,8 @@ $string['recommend_course:addinstance'] = 'Add a new Recommend a Course block';
 $string['recommend_course:myaddinstance'] = 'Add a new Recommend a Course block to the Dashboard';
 $string['recommend_course:viewstats'] = 'View course recommendation statistics';
 
-$string['privacy:metadata:recommend_course_recommends'] = 'Stores course recommendations made by users.';
-$string['privacy:metadata:recommend_course_recommends:sender_id'] = 'User id of the person who recommended the course.';
-$string['privacy:metadata:recommend_course_recommends:receiver_id'] = 'User id of the user who received the recommendation.';
-$string['privacy:metadata:recommend_course_recommends:course_id'] = 'Course id that was recommended.';
-$string['privacy:metadata:recommend_course_recommends:created_on'] = 'When the recommendation was created.';
+$string['privacy:metadata:block_recommend_course_rds'] = 'Stores course recommendations made by users.';
+$string['privacy:metadata:block_recommend_course_rds:sender_id'] = 'User id of the person who recommended the course.';
+$string['privacy:metadata:block_recommend_course_rds:receiver_id'] = 'User id of the user who received the recommendation.';
+$string['privacy:metadata:block_recommend_course_rds:course_id'] = 'Course id that was recommended.';
+$string['privacy:metadata:block_recommend_course_rds:created_on'] = 'When the recommendation was created.';

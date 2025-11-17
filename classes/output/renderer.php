@@ -36,7 +36,6 @@ use plugin_renderer_base;
  * @category   output
  */
 class renderer extends plugin_renderer_base {
-
     /**
      * Return the main content for the Available Courses block.
      *

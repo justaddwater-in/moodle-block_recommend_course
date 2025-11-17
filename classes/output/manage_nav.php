@@ -38,7 +38,6 @@ use templatable;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manage_nav implements renderable, templatable {
-
     /** @var string Current script basename (e.g. 'history.php') */
     protected $currentpage;
 

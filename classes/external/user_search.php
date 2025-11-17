@@ -38,7 +38,6 @@ require_once($CFG->libdir . '/externallib.php');
  * External service for searching users.
  */
 class user_search extends \external_api {
-
     /**
      * Returns description of method parameters.
      *

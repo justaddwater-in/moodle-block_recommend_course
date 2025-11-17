@@ -17,30 +17,31 @@
  * Course selector module for autocomplete.
  *
  * @module     block_recommend_course/form-course-selector
- * @package    block_recommend_course
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['core/ajax', 'core/templates'], function(Ajax, Templates) {
+define(['core/ajax'], function(Ajax) {
+    'use strict';
+
     return {
         transport: function(selector, query, success, failure) {
             var promise;
-            
+
             promise = Ajax.call([{
                 methodname: 'block_recommend_course_course_search',
                 args: {
                     query: query
                 }
             }]);
-            
+
             promise[0].then(function(results) {
                 success(results);
                 return;
             }).catch(failure);
         },
-        
+
         processResults: function(selector, results) {
             return results;
         }

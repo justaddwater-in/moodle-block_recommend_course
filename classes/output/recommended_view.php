@@ -70,7 +70,7 @@ class recommended_view implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         global $CFG, $DB, $OUTPUT;
-        require_once($CFG->dirroot.'/course/lib.php');
+        require_once($CFG->dirroot . '/course/lib.php');
         require_once($CFG->libdir . '/filelib.php');
 
         // Build courses view data structure.
@@ -150,5 +150,4 @@ class recommended_view implements renderable, templatable {
 
         return $availableview;
     }
-
 }

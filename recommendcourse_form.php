@@ -36,7 +36,6 @@ require_once("$CFG->libdir/formslib.php");
  * @category   form
  */
 class recommendcourse_form extends moodleform {
-
     /**
      * Add elements to form
      */

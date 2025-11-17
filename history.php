@@ -34,7 +34,7 @@
 if (!has_capability('block/recommend_course:viewstats', $context)) {
     echo $OUTPUT->header();
     echo $OUTPUT->notification(get_string('nopermission', 'block_recommend_course'), 'error');
-    echo '<a href="' . new moodle_url('/my/') . '" class="btn btn-primary">'.
+    echo '<a href="' . new moodle_url('/my/') . '" class="btn btn-primary">' .
     get_string('back_dashboard', 'block_recommend_course') . '</a>';
     echo $OUTPUT->footer();
     exit;
@@ -43,7 +43,7 @@ if (!has_capability('block/recommend_course:viewstats', $context)) {
  $pluginname = get_string('pluginname', 'block_recommend_course');
  $title = get_string('historytitle', 'block_recommend_course');
  $PAGE->set_url(new moodle_url('/blocks/recommend_course/recommendations.php'));
- $PAGE->set_title($pluginname.' : '.$title);
+ $PAGE->set_title($pluginname . ' : ' . $title);
  $PAGE->set_heading($pluginname);
  $PAGE->set_pagelayout('standard');
 
@@ -61,7 +61,7 @@ if (!has_capability('block/recommend_course:viewstats', $context)) {
                s.firstname AS sender_firstname, s.lastname AS sender_lastname,
                u.firstname AS receiver_firstname, u.lastname AS receiver_lastname,
                c.fullname AS course_fullname
-          FROM {recommend_course_recommends} r
+          FROM {block_recommend_course_rds} r
           JOIN {user} s ON s.id = r.sender_id
           JOIN {user} u ON u.id = r.receiver_id
           JOIN {course} c ON c.id = r.course_id";

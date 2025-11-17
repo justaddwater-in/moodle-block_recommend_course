@@ -16,23 +16,23 @@
 /**
  * JS File : block_recommend_course plugin.
  *
- * @package    block_recommend_course
+ * @module     block_recommend_course/init_datatable
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define(['jquery'], function($) {
+    'use strict';
+
     return {
         DTinit: function(selector, options) {
             // Dynamically load the DataTables library
             require(['js/datatables.min.js'], function() {
-                // Initialize the DataTable
+                // Initialize the DataTable when DOM is ready
                 $(document).ready(function() {
                     if ($.fn.DataTable) {
                         $(selector).DataTable(options);
-                    } else {
-                        console.error('DataTables library failed to load.');
                     }
                 });
             });

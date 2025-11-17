@@ -34,14 +34,10 @@ use core_privacy\local\request\writer;
 /**
  * Privacy API implementation for block_recommend_course.
  *
- * Stores recommendations in table: {recommend_course_recommends}
+ * Stores recommendations in table: {block_recommend_course_rds}
  * Fields relevant to users: sender_id, receiver_id.
  */
-class provider implements
-    \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\core_user_data_provider,
-    \core_privacy\local\request\core_userlist_provider {
-
+class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\core_userlist_provider, \core_privacy\local\request\core_user_data_provider {
     /**
      * Declare metadata about stored personal data.
      *
@@ -51,14 +47,14 @@ class provider implements
     public static function get_metadata(collection $collection): collection {
         // Describe the DB table and fields we store.
         $collection->add_database_table(
-            'recommend_course_recommends',
+            'block_recommend_course_rds',
             [
-                'sender_id'    => 'privacy:metadata:recommend_course_recommends:sender_id',
-                'receiver_id'  => 'privacy:metadata:recommend_course_recommends:receiver_id',
-                'course_id'    => 'privacy:metadata:recommend_course_recommends:course_id',
-                'created_on'   => 'privacy:metadata:recommend_course_recommends:created_on',
+                'sender_id'    => 'privacy:metadata:block_recommend_course_rds:sender_id',
+                'receiver_id'  => 'privacy:metadata:block_recommend_course_rds:receiver_id',
+                'course_id'    => 'privacy:metadata:block_recommend_course_rds:course_id',
+                'created_on'   => 'privacy:metadata:block_recommend_course_rds:created_on',
             ],
-            'privacy:metadata:recommend_course_recommends'
+            'privacy:metadata:block_recommend_course_rds'
         );
 
         return $collection;
@@ -80,7 +76,7 @@ class provider implements
 
         // If user is sender or receiver, then add system context.
         $sql = "SELECT 1
-                  FROM {recommend_course_recommends}
+                  FROM {block_recommend_course_rds}
                  WHERE sender_id = :uid OR receiver_id = :uid
                 LIMIT 1";
         $params = ['uid' => $userid];
@@ -112,7 +108,7 @@ class provider implements
         // Find distinct users who are sender or receiver.
         $sql = "SELECT DISTINCT u.id
                   FROM {user} u
-                  JOIN {recommend_course_recommends} r
+                  JOIN {block_recommend_course_rds} r
                     ON (r.sender_id = u.id OR r.receiver_id = u.id)";
         $records = $DB->get_records_sql($sql);
 
@@ -141,7 +137,7 @@ class provider implements
             $userid = $contextlist->get_user();
 
             // Export recommendations where the user is sender.
-            $sent = $DB->get_records('recommend_course_recommends', ['sender_id' => $userid]);
+            $sent = $DB->get_records('block_recommend_course_rds', ['sender_id' => $userid]);
             $sentdata = [];
             foreach ($sent as $r) {
                 $sentdata[] = [
@@ -163,7 +159,7 @@ class provider implements
             }
 
             // Export recommendations where the user is receiver.
-            $received = $DB->get_records('recommend_course_recommends', ['receiver_id' => $userid]);
+            $received = $DB->get_records('block_recommend_course_rds', ['receiver_id' => $userid]);
             $receiveddata = [];
             foreach ($received as $r) {
                 $receiveddata[] = [
@@ -206,8 +202,8 @@ class provider implements
             $userid = $contextlist->get_user();
 
             // Delete rows where the user is sender or receiver.
-            $DB->delete_records('recommend_course_recommends', ['sender_id' => $userid]);
-            $DB->delete_records('recommend_course_recommends', ['receiver_id' => $userid]);
+            $DB->delete_records('block_recommend_course_rds', ['sender_id' => $userid]);
+            $DB->delete_records('block_recommend_course_rds', ['receiver_id' => $userid]);
 
             // If you stored files per-user, you must delete them as well with file_storage.
         }
@@ -228,7 +224,7 @@ class provider implements
             return;
         }
 
-        $DB->delete_records('recommend_course_recommends', []);
+        $DB->delete_records('block_recommend_course_rds', []);
     }
 
     /**
@@ -250,8 +246,8 @@ class provider implements
             return;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
-        $DB->delete_records_select('recommend_course_recommends', "sender_id $insql", $inparams);
-        $DB->delete_records_select('recommend_course_recommends', "receiver_id $insql", $inparams);
+        [$insql, $inparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+        $DB->delete_records_select('block_recommend_course_rds', "sender_id $insql", $inparams);
+        $DB->delete_records_select('block_recommend_course_rds', "receiver_id $insql", $inparams);
     }
 }

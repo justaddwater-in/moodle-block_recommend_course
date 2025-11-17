@@ -35,7 +35,6 @@ require_once($CFG->libdir . '/externallib.php');
  * External service for searching courses.
  */
 class course_search extends \external_api {
-
     /**
      * Returns description of method parameters.
      *
