@@ -41,6 +41,7 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_user_data_provider,
     \core_privacy\local\request\core_userlist_provider {
+
     /**
      * Declare metadata about stored personal data.
      *
@@ -254,3 +255,4 @@ class provider implements
         $DB->delete_records_select('block_recommend_course_rds', "receiver_id $insql", $inparams);
     }
 }
+
