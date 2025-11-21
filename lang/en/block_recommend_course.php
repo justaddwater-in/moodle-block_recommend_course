@@ -52,8 +52,10 @@ $string['show_all'] = 'Show All Recommendations';
 $string['submit'] = 'Submit';
 $string['title'] = 'Recommend a course';
 
-
-
+$string['history_table_caption'] = 'Course recommendation history';
+$string['recommended_by'] = 'Recommended by';
+$string['recommended_to'] = 'Recommended to';
+$string['recommended_date'] = 'Recommended date';
 
 $string['view_course'] = 'View Course';
 

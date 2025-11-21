@@ -54,7 +54,7 @@ $PAGE->set_heading($pluginname);
 $PAGE->set_pagelayout('standard');
 $PAGE->requires->css('/blocks/recommend_course/css/style.css');
 
-// Use joins so we also fetch course fullname
+// Use joins so we also fetch course fullname.
 $topsql = "SELECT r.course_id, COUNT(*) AS recommendation_count, c.fullname AS course_fullname
               FROM {block_recommend_course_rds} r
               JOIN {course} c ON c.id = r.course_id

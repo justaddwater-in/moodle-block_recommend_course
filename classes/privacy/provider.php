@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Recommend a course Moodle block plugin
+ * Recommend a course Moodle block plugin privacy provider
  *
  * @package    block_recommend_course
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
