@@ -42,4 +42,12 @@ $functions = [
         'ajax' => true,
         'loginrequired' => true,
     ],
+    'block_recommend_course_cohort_search' => [
+        'classname' => 'block_recommend_course\external\cohort_search',
+        'methodname' => 'execute',
+        'description' => 'Search for cohorts',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
 ];

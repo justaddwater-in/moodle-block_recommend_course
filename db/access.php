@@ -49,4 +49,13 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    /*AJOUT CAMILLE pour faire en sorte que seuls les admin et enseignants puissent recommander des cours - part#1 */
+    'block/recommend_course:managerecommendations' => [
+    'captype' => 'write',
+    'contextlevel' => CONTEXT_SYSTEM,
+    'archetypes' => [
+        'manager' => CAP_ALLOW,
+        'editingteacher' => CAP_ALLOW,
+    ],
+],
 ];

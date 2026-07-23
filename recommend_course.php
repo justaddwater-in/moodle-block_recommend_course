@@ -39,38 +39,91 @@ if ($mform->is_cancelled()) {
     redirect($CFG->wwwroot);
 } else if ($fromform = $mform->get_data()) {
     // Adding data to db.
-    if (count($fromform->users) > 0 && $fromform->course) {
+    if ((!empty($fromform->users) || !empty($fromform->cohorts)) && !empty($fromform->courses)) {
             // Get settings once.
         $sendnotification = get_config('block_recommend_course', 'send_notification');
         $sendemail = get_config('block_recommend_course', 'send_email');
         $emailbody = get_config('block_recommend_course', 'email_body');
         $emailsubject = get_config('block_recommend_course', 'email_subject');
+        // Build the final list of users.
+        $users = [];
+
+        // Individually selected users.
+        if (!empty($fromform->users)) {
+            foreach ($fromform->users as $userid) {
+                $users[$userid] = $userid;
+            }
+        }
+
+        // Users from selected cohorts.
+        if (!empty($fromform->cohorts)) {
+            foreach ($fromform->cohorts as $cohortid) {
+
+                $members = $DB->get_records(
+                    'cohort_members',
+                    ['cohortid' => $cohortid],
+                    '',
+                    'userid'
+                );
+
+                foreach ($members as $member) {
+                    $users[$member->userid] = $member->userid;
+                }
+            }
+        }
+
+        $users = array_values($users);
         // Get course name.
-        $course = $DB->get_record('course', ['id' => $fromform->course], '*', MUST_EXIST);
-        foreach ($fromform->users as $receiver) {
-            $temp = new stdClass();
-            $temp->sender_id = $USER->id;
-            $temp->receiver_id = $receiver;
-            $temp->course_id = $fromform->course;
-            $temp->created_on = date('Y-m-d H:i:s');
-            $DB->insert_record('block_recommend_course_rds', $temp);
+        //$course = $DB->get_record('course', ['id' => $fromform->course], '*', MUST_EXIST);
+        foreach ($fromform->courses as $courseid) {
 
-            // Get receiver user object.
-            $recommendee = $DB->get_record('user', ['id' => $receiver], '*', MUST_EXIST);
+            // Get course information.
+            $course = $DB->get_record(
+                'course',
+                ['id' => $courseid],
+                '*',
+                MUST_EXIST
+        );
 
-            // Prepare message with placeholders.
-            $message = str_replace(
-                ['[course_name]', '[recommended_by]'],
-                [$course->fullname, fullname($USER)],
-                $emailbody
-            );
-            $subject = str_replace(
-                ['[course_name]', '[recommended_by]'],
-                [$course->fullname, fullname($USER)],
-                $emailsubject
-            );
+            foreach ($users as $receiver) {
+
+                $temp = new stdClass();
+                $temp->sender_id = $USER->id;
+                $temp->receiver_id = $receiver;
+                $temp->course_id = $courseid;
+                $temp->created_on = date('Y-m-d H:i:s');
+
+                $DB->insert_record(
+                    'block_recommend_course_rds',
+                    $temp
+                );
+
+
+                // Get receiver user object.
+                $recommendee = $DB->get_record(
+                    'user',
+                    ['id' => $receiver],
+                    '*',
+                    MUST_EXIST
+                );
+
+
+                // Prepare message with placeholders.
+                $message = str_replace(
+                    ['[course_name]', '[recommended_by]'],
+                    [$course->fullname, fullname($USER)],
+                    $emailbody
+                );
+
+                $subject = str_replace(
+                    ['[course_name]', '[recommended_by]'],
+                    [$course->fullname, fullname($USER)],
+                    $emailsubject
+                );
+
 
                 $eventdata = new \core\message\message();
+
                 $eventdata->component = 'block_recommend_course';
                 $eventdata->userfrom = $USER;
                 $eventdata->userto = $recommendee;
@@ -80,16 +133,17 @@ if ($mform->is_cancelled()) {
                 $eventdata->fullmessagehtml = $message;
                 $eventdata->notification = 1;
 
-                // Decide provider.
-            if ($sendemail && $sendnotification) {
-                $eventdata->name = 'recommendation_both';
-            } else if ($sendnotification) {
-                $eventdata->name = 'recommendation_popup';
-            } else if ($sendemail) {
-                $eventdata->name = 'recommendation_email';
-            }
+
+                if ($sendemail && $sendnotification) {
+                    $eventdata->name = 'recommendation_both';
+                } else if ($sendnotification) {
+                    $eventdata->name = 'recommendation_popup';
+                } else if ($sendemail) {
+                    $eventdata->name = 'recommendation_email';
+                }
 
                 message_send($eventdata);
+            }
         }
         $redirecturl = "$CFG->wwwroot/blocks/recommend_course/recommend_course.php";
         redirect(

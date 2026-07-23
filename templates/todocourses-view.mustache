@@ -55,6 +55,7 @@
     </div>  
 <div class="recommend-course-footer d-flex flex-wrap mt-2">
 
+    {{#canmanagerecommendations}}
     <a href="{{allurl}}" class="btn btn-secondary btn-sm" style="margin-right:2px; margin-bottom:5px;">
         {{#str}} show_all, block_recommend_course {{/str}}
     </a>
@@ -62,6 +63,7 @@
     <a href="{{recommendurl}}" class="btn btn-primary btn-sm" style="margin-right:2px; margin-bottom:5px;">
         {{#str}} button, block_recommend_course {{/str}}
     </a>
+    {{/canmanagerecommendations}}
 
     {{#canviewhistory}}
         <a href="{{historyurl}}" class="btn btn-secondary btn-sm" style="margin-right:2px; margin-bottom:5px;">

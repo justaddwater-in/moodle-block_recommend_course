@@ -42,20 +42,21 @@ class recommendcourse_form extends moodleform {
         global $CFG;
         $mform = $this->_form;
 
-        // Add course autocomplete with AJAX.
+        // Add course autocomplete with AJAX. MODIFIE PAR CAMILLE pour sélectionner plusieurs cours
         $options = [
             'ajax' => 'block_recommend_course/form-course-selector',
-            'multiple' => false,
+            'multiple' => true,
             'noselectionstring' => get_string('select_course', 'block_recommend_course'),
         ];
+
         $mform->addElement(
             'autocomplete',
-            'course',
+            'courses',
             get_string('select_course', 'block_recommend_course'),
             [],
-            $options
+        $options
         );
-        $mform->addRule('course', get_string('required'), 'required', null, 'client');
+        $mform->addRule('courses', get_string('required'), 'required', null, 'client');
 
         // Add user multi-select autocomplete with aJAX.
         $useroptions = [
@@ -70,7 +71,21 @@ class recommendcourse_form extends moodleform {
             [],
             $useroptions
         );
-        $mform->addRule('users', get_string('required'), 'required', null, 'client');
+        //$mform->addRule('users', get_string('required'), 'required', null, 'client');
+
+        // Add cohort multi-select autocomplete with AJAX.
+        $cohortoptions = [
+            'ajax' => 'block_recommend_course/form-cohort-selector',
+            'multiple' => true,
+            'noselectionstring' => get_string('noselection_string', 'block_recommend_course'),
+        ];
+        $mform->addElement(
+            'autocomplete',
+            'cohorts',
+            get_string('select_cohorts', 'block_recommend_course'),
+            [],
+            $cohortoptions
+        );
 
         $this->add_action_buttons(true, get_string('submit'));
     }

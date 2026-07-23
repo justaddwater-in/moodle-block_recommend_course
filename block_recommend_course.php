@@ -65,6 +65,7 @@ class block_recommend_course extends block_base {
             'course-view' => true,
             'mod' => true,
             'my' => true,
+            'local-*' => true,
         ];
     }
 }

@@ -76,8 +76,11 @@ class main implements renderable, templatable {
         $canviewhistory = has_capability('block/recommend_course:viewstats', $context);
         $canchangesetting = is_siteadmin();
 
+        /*AJOUT CAMILLE pour déterminer ce que l'utilisateur connecté a le droit de voir ou de faire dans le bloc*/
+        $canmanagerecommendations = has_capability('block/recommend_course:managerecommendations', $context);
+
         $issidebar = $this->issidebar;
-        $limit = $issidebar ? 1 : 4;
+        $limit = $issidebar ? 5 : 5;
 
         // Fetch recommendations for this user.
         $sql = "SELECT rec.id AS rec_id, rec.sender_id,
@@ -108,6 +111,7 @@ class main implements renderable, templatable {
             'recommendurl' => (new \moodle_url('/blocks/recommend_course/recommend_course.php'))->out(false),
             'historyurl' => (new \moodle_url('/blocks/recommend_course/history.php'))->out(false),
             'settingurl' => (new \moodle_url('/blocks/recommend_course/setting.php'))->out(false),
+            'canmanagerecommendations' => $canmanagerecommendations,
             'canviewhistory' => $canviewhistory,
             'canchangesetting' => $canchangesetting,
         ];

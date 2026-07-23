@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,17 +14,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Recommend a course Moodle block plugin
+ * Cohort selector module for autocomplete.
  *
- * @package    block_recommend_course
+ * @module     block_recommend_course/form-cohort-selector
  * @copyright  2025 Justaddwater <contact@justaddwater.in>
  * @author     Himanshu Saini
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026072213;
-$plugin->requires = 2018051700; // Moodle 3.5.
-$plugin->component = 'block_recommend_course';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.2';
+define(['core/ajax'], function(Ajax) {
+    'use strict';
+
+    return {
+        transport: function(selector, query, success, failure) {
+            var promise;
+
+            promise = Ajax.call([{
+                methodname: 'block_recommend_course_cohort_search',
+                args: {
+                    query: query
+                }
+            }]);
+
+            promise[0].then(function(results) {
+                success(results);
+                return;
+            }).catch(failure);
+        },
+
+        processResults: function(selector, results) {
+            return results;
+        }
+    };
+});
